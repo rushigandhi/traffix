@@ -6,6 +6,9 @@ class Vehicle {
       this.r = 6;
       this.maxspeed = 8;
       this.maxforce = 0.2;
+      this.dna = []
+      this.dna[0] = random(-5,5)
+      this.dna[1] = random(-5,5)
     }
   
     update() {
@@ -19,20 +22,31 @@ class Vehicle {
       this.acceleration.add(force);
     }
 
-    eat(foodList) {
+    behaviours(good, bad) {
+        var foodSteer = this.eat(good);
+        var poisonSteer = this.eat(bad);
+        foodSteer.mult(this.dna[0])
+        poisonSteer.mult(this.dna[1])
+        this.applyForce(foodSteer)
+        this.applyForce(poisonSteer)
+    }
+
+    eat(list) {
         var record = Infinity
         var closest = null
-        for (var i = 0; i < foodList.length; i++){
-            var d = this.position.dist(foodList[i])
+        for (var i = 0; i < list.length; i++){
+            var d = this.position.dist(list[i])
             if (d<record) {
                 record = d
                 closest = i
             }
         }
-        this.seek(foodList[closest]);
         if (record < 5) {
             food.splice(closest, 1)
-        } 
+        } else if (closest > -1){
+            return this.seek(list[closest]);
+        }
+        return createVector(0,0)
      }
   
     seek(target) {
@@ -44,7 +58,8 @@ class Vehicle {
       var steer = p5.Vector.sub(desired, this.velocity);
       steer.limit(this.maxforce);
   
-      this.applyForce(steer);
+      // this.applyForce(steer);
+      return steer
     }
   
     display() {

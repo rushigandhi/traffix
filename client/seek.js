@@ -7,16 +7,15 @@ function randomCoords(){
     for (var i = 0; i<10; i++){
         var x = random(width)
         var y = random(height)
-        list.push(creatVector(x,y))
+        list.push(createVector(x,y))
     }
     return list
 }
-function plotCoords(list){
+function plotCoords(list, colour){
   for (var i = 0; i < list.length; i++) {
-    fill (0,255,0)
+    colour == "red" ? fill (255,0,0) : fill (0,255,0)
     ellipse(list[i].x, list[i].y, 8, 8)
  }
-
 }
 function setup() {
   createCanvas(640, 360);
@@ -36,12 +35,13 @@ function draw() {
   strokeWeight(2);
   ellipse(mouse.x, mouse.y, 48, 48);
   
-   plotCoords(food, (0,255,0))
-   plotCoords(poison, (255,0,0))
+   plotCoords(food, "green")
+   plotCoords(poison, "red")
  
 
   // Steering
-  v.eat(food);
+  v.behaviours(food, poison)
+
   v.update();
   v.display();
 
