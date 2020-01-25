@@ -1,4 +1,4 @@
-let v;
+let vehicles = [];
 var food = [];
 var poison = [];
 
@@ -28,7 +28,11 @@ function plotBasicIntersection() {}
 
 function setup() {
   createCanvas(640, 360);
-  v = new Vehicle(width / 2, height / 2);
+  for (var i = 0; i < 10; i++) {
+    var x = random(width);
+    var y = random(height);
+    vehicles[i] = new Vehicle(x,y);
+  }
   setupEntities();
 }
 
@@ -47,8 +51,10 @@ function draw() {
   plotCoords(poison, "red");
 
   // Steering
-  v.behaviours(food, poison);
-
-  v.update();
-  v.display();
+  for (var i = 0; i < 10; i++) {
+    vehicles[i].behaviours(food, poison);
+    vehicles[i].update();
+    vehicles[i].display();
+  }
+  
 }

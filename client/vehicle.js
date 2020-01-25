@@ -64,17 +64,26 @@ class Vehicle {
   
     display() {
       let theta = this.velocity.heading() + PI / 2;
-      fill(127);
-      stroke(200);
-      strokeWeight(1);
+      
       push();
       translate(this.position.x, this.position.y);
       rotate(theta);
+    // Direction vector
+    stroke(0,255,0);
+    line(0,0,0,-this.dna[0]*20);
+    stroke(255,0,0);
+    line(0,0,0,this.dna[1]*20);
+  
+        fill(127);
+      stroke(200);
+      strokeWeight(1);
       beginShape();
       vertex(0, -this.r * 2);
       vertex(-this.r, this.r * 2);
       vertex(this.r, this.r * 2);
       endShape(CLOSE);
+
+    
       pop();
     }
   }
