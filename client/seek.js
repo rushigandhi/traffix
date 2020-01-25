@@ -21,6 +21,7 @@ function plotCoords(list, colour) {
 function setupEntities() {
   food = randomCoords();
   poison = randomCoords();
+  plotBasicIntersection();
 }
 
 function plotBasicIntersection() {}
