@@ -18,13 +18,21 @@ function plotCoords(list, colour) {
   }
 }
 
-function setupEntities() {
-  food = randomCoords();
-  poison = randomCoords();
-  plotBasicIntersection();
+function plotBasicIntersection() {
+  list = [];
+  separation = 10;
+  for (var i = 0; i < 10; i++) {
+    var x = random(width);
+    var y = random(height);
+    list.push(createVector(x, y));
+  }
+  return list;
 }
 
-function plotBasicIntersection() {}
+function setupEntities() {
+  food = randomCoords();
+  poison = plotBasicIntersection();
+}
 
 function setup() {
   createCanvas(640, 360);
