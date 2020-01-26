@@ -189,11 +189,13 @@ class Vehicle {
     desired.setMag(this.dna[6]);
 
     var steer = p5.Vector.sub(desired, this.velocity);
+
     // steer.y = -Math.abs(steer.y);
 
     // steer.x = -Math.abs(steer.x);
 
     steer.limit(this.dna[7]);
+
 
     // this.applyForce(steer);
     return steer;
