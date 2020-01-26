@@ -1,6 +1,10 @@
 var mr = 0.5;
 class Vehicle {
-  constructor(x, y, dna) {
+  constructor(x, y, color, pathList, finishNumber, finishDirection, dna) {
+    this.finishNumber = finishNumber;
+    this.finishDirection = finishDirection;
+    this.pathList = pathList;
+    this.color = color;
     this.acceleration = createVector(0, 0);
     this.velocity = createVector(0, -1);
     this.position = createVector(x, y);
@@ -12,8 +16,8 @@ class Vehicle {
       this.dna[1] = -10; // Poison
       this.dna[2] = random(0, 100); // Food Perception
       this.dna[3] = random(0, 50); // Poison Perception
-      this.dna[4] = random(10, 50); // Desired Seperation
-      this.dna[5] = random(0, 8); // Seperation force
+      this.dna[4] = random(0, 100); // Desired Seperation
+      this.dna[5] = random(0, 20); // Seperation force
       this.dna[6] = random(5, 15); // Speed
       this.dna[7] = random(0, 1); // Max Force
     } else {
@@ -39,7 +43,6 @@ class Vehicle {
 
   boundaries() {
     var d = 25;
-
     let desired = null;
 
     if (this.position.x < d) {
@@ -64,7 +67,7 @@ class Vehicle {
   }
 
   update() {
-    this.health -= 0.01;
+    this.health -= 0.55;
     this.velocity.add(this.acceleration);
     this.velocity.limit(this.dna[6]);
     this.position.add(this.velocity);
@@ -76,31 +79,67 @@ class Vehicle {
   }
 
   behaviours(good, bad) {
-    // let separateForce = this.separate(vehicles);
+    let separateForce = this.separate(vehicles);
     var foodSteer = this.eatGood(good, 0.2, this.dna[2]);
-    var poisonSteer = this.eatBad(bad, -5, this.dna[3]);
+    var poisonSteer = this.eatBad(bad, -Infinity, this.dna[3]);
+    separateForce.mult(this.dna[5] * 5);
     foodSteer.mult(this.dna[0]);
     poisonSteer.mult(this.dna[1]);
-    // separateForce.mult(5);
+    this.applyForce(separateForce);
     this.applyForce(foodSteer);
-    // this.applyForce(separateForce);
     this.applyForce(poisonSteer);
+  }
+
+  pastFinishLine() {
+    if (this.finishDirection == "x-left") {
+      return this.position.x <= this.finishNumber;
+    } else if (this.finishDirection == "x-right") {
+      return this.position.x >= this.finishNumber;
+    } else if (this.finishDirection == "y-down") {
+      return this.position.y >= this.finishNumber;
+    } else if (this.finishDirection == "y-up") {
+      return this.position.y <= this.finishNumber;
+    }
+    return false;
+  }
+
+  outOfBounds() {
+    return (
+      Math.abs(this.position.x) >= Math.abs(width) ||
+      Math.abs(this.position.y) >= Math.abs(height)
+    );
   }
 
   retired() {
     if (this.health < 0) {
       return true;
-    } else if (this.position.y >= 360) {
+    } else if (this.pastFinishLine()) {
+      this.reproduce();
       this.reproduce();
       this.reproduce();
 
       return true;
-    } else if (this.position.x >= 640 || this.position.x <= 0) return true;
-    return false;
+    } else if (this.outOfBounds()) {
+      return true;
+    } else {
+      return false;
+    }
   }
 
   reproduce() {
-    vehicles.push(new Vehicle(20, 110, this.dna));
+    if (vehicles.length < 50) {
+      vehicles.push(
+        new Vehicle(
+          20,
+          110,
+          this.color,
+          this.pathList,
+          this.finishNumber,
+          this.finishDirection,
+          this.dna
+        )
+      );
+    }
   }
 
   eatGood(list, nutrition, perception) {
@@ -108,6 +147,7 @@ class Vehicle {
     var maxReward = -Infinity;
     var index = 0;
     for (var i = list.length - 1; i >= 0; i--) {
+      // console.log(list[i])
       var d = this.position.dist(list[i].vector);
       if (d < this.dna[6]) {
         this.health += nutrition;
@@ -119,7 +159,6 @@ class Vehicle {
         }
       }
     }
-    console.log(maxReward, index);
     if (closest != null) {
       return this.seek(list[index].vector || list[index]);
     }
@@ -130,12 +169,12 @@ class Vehicle {
     var record = Infinity;
     var closest = null;
     for (var i = list.length - 1; i >= 0; i--) {
-      var d = this.position.dist(list[i]);
+      var d = this.position.dist(list[i].vector);
       if (d < this.dna[6]) {
         this.health += nutrition;
       } else if (d < record && d < perception) {
         record = d;
-        closest = list[i];
+        closest = list[i].vector;
       }
     }
     if (closest != null) {
@@ -198,16 +237,18 @@ class Vehicle {
     rotate(theta);
     // Direction vector
     stroke(0, 255, 0);
-    noFill();
-    line(0, 0, 0, -this.dna[0] * 20);
-    ellipse(0, 0, -this.dna[2] * 2);
-    stroke(255, 0, 0);
-    line(0, 0, 0, this.dna[1] * 20);
-    ellipse(0, 0, this.dna[3] * 2);
+    // noFill();
+    // line(0, 0, 0, -this.dna[0] * 20);
+    // ellipse(0, 0, -this.dna[2] * 2);
+    // stroke(255, 0, 0);
+    // line(0, 0, 0, this.dna[1] * 20);
+    // ellipse(0, 0, this.dna[3] * 2);
 
-    var green = color(0, 255, 0);
+    var initialColor =
+      this.color == "green" ? color(0, 255, 0) : color(255, 255, 0);
     var red = color(255, 0, 0);
-    var carColor = lerpColor(red, green, this.health);
+
+    var carColor = lerpColor(red, initialColor, this.health);
 
     fill(carColor);
     stroke(carColor);
