@@ -124,6 +124,7 @@ class Vehicle {
     desired.setMag(this.maxspeed);
 
     var steer = p5.Vector.sub(desired, this.velocity);
+
     steer.limit(this.maxforce);
 
     // this.applyForce(steer);
