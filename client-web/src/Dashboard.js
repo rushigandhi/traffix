@@ -2,6 +2,7 @@ import React from "react";
 import { Layout, Menu, Icon } from "antd";
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 import { Map } from "./map/Map";
+import { InfoLog } from "./InfoLog";
 
 const { Content, Footer, Sider } = Layout;
 
@@ -59,6 +60,9 @@ export class Dashboard extends React.Component {
               >
                 <Route path="/map">
                   <Map />
+                </Route>
+                <Route path="/info-log">
+                  <InfoLog />
                 </Route>
               </Content>
               <Footer style={{ textAlign: "center" }}>Traffixed</Footer>

@@ -4,7 +4,8 @@ import {
   withScriptjs,
   withGoogleMap,
   GoogleMap,
-  Marker
+  Marker,
+  Circle
 } from "react-google-maps";
 
 export const GoogleMaps = compose(
@@ -23,7 +24,40 @@ export const GoogleMaps = compose(
     defaultCenter={{ lat: 43.257955, lng: -79.922199 }}
   >
     {props.isMarkerShown && (
-      <Marker position={{ lat: 43.257955, lng: -79.922199 }} />
+      <React.Fragment>
+        {/* <Marker
+          position={{
+            lat: (props.location && props.location.lat) || 0,
+            lng: (props.location && props.location.lng) || 0
+          }}
+        />
+        <Circle
+          defaultCenter={{
+            lat: (props.location && props.location.lat) || 0,
+            lng: (props.location && props.location.lng) || 0
+          }}
+          radius={3000}
+          options={{
+            strokeColor: "#ff0000"
+          }}
+        /> */}
+        <Marker
+          position={{
+            lat: 43.257955,
+            lng: -79.922199
+          }}
+        />
+        <Circle
+          defaultCenter={{
+            lat: 43.257955,
+            lng: -79.922199
+          }}
+          radius={props.radius || 100}
+          options={{
+            strokeColor: "#ff0000"
+          }}
+        />
+      </React.Fragment>
     )}
   </GoogleMap>
 ));
