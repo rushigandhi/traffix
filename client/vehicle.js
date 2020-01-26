@@ -12,8 +12,8 @@ class Vehicle {
       this.dna[1] = -10; // Poison
       this.dna[2] = random(0, 100); // Food Perception
       this.dna[3] = random(0, 50); // Poison Perception
-      this.dna[4] = random(10, 50); // Desired Seperation
-      this.dna[5] = random(0, 8); // Seperation force
+      this.dna[4] = random(10, 50); // Obstacle Separation
+      this.dna[5] = random(0, 8); // Separation force
       this.dna[6] = random(5, 15); // Speed
       this.dna[7] = random(0, 1); // Max Force
     } else {
@@ -63,12 +63,40 @@ class Vehicle {
     }
   }
 
-  update() {
+  async update() {
     this.health -= 0.01;
     this.velocity.add(this.acceleration);
     this.velocity.limit(this.dna[6]);
     this.position.add(this.velocity);
     this.acceleration.mult(0);
+
+    fetch("http://localhost:3003/dna", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        foodStrength: this.dna[0],
+        poisonStrength: this.dna[1],
+        foodPerception: this.dna[2],
+        poisonPerception: this.dna[3],
+        obstacleSeparation: this.dna[4],
+        separationForce: this.dna[5],
+        speed: this.dna[6],
+        maxForce: this.dna[7]
+      })
+    });
+
+    console.log(
+      JSON.stringify({
+        a: this.dna[0],
+        b: this.dna[1],
+        c: this.dna[2],
+        d: this.dna[3],
+        e: this.dna[4],
+        f: this.dna[5],
+        g: this.dna[6],
+        h: this.dna[7]
+      })
+    );
   }
 
   applyForce(force) {
@@ -119,7 +147,6 @@ class Vehicle {
         }
       }
     }
-    console.log(maxReward, index);
     if (closest != null) {
       return this.seek(list[index].vector || list[index]);
     }
