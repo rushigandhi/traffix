@@ -19,13 +19,13 @@ function plotCoords(list, colour) {
   }
 }
 
-function plotBasicIntersection(yPos, xPos) {
+function plotBasicIntersection(xStart, xEnd, yStart, yEnd) {
   list = [];
   separation = 10;
-  for (var i = 0; i < 640; i += separation) {
-    var x = i;
-    if (xPos) list.push(createVector(xPos, yPos));
-    else list.push(createVector(x, yPos));
+  for (var i = xStart; i < xEnd; i += separation) {
+    for (var j = yStart; j < yEnd; j += separation) {
+      list.push(createVector(i, j));
+    }
   }
   return list;
 }
@@ -34,20 +34,19 @@ function setupEntities() {
   food = randomCoords(0);
   poison = randomCoords(0);
 
-  for (var j = 0; j < 100; j += 10) {
-    const z = plotBasicIntersection(j);
-    z.forEach(a => poison.push(a));
-  }
+  let z = plotBasicIntersection(0, 640, 0, 75);
+  z.forEach(a => poison.push(a));
 
-  for (var j = 110; j < 290; j += 10) {
-    const z = plotBasicIntersection(j, 635);
-    z.forEach(a => food.push(a));
-  }
+  z = plotBasicIntersection(500, 640, 0, 360);
+  z.forEach(a => poison.push(a));
 
-  for (var j = 300; j < 640; j += 10) {
-    const z = plotBasicIntersection(j);
-    z.forEach(a => poison.push(a));
-  }
+  z = plotBasicIntersection(0, 330, 250, 360);
+  z.forEach(a => poison.push(a));
+
+  z = plotBasicIntersection(330, 500, 340, 360);
+  z.forEach(a => food.push(a));
+  // let z = plotBasicIntersection(0, 640, 0, 75);
+  // z.forEach(a => poison.push(a));
 }
 
 function setup() {
