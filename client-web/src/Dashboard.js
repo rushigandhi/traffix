@@ -3,7 +3,7 @@ import { Layout, Menu, Icon } from "antd";
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 import { Map } from "./map/Map";
 
-const { Header, Content, Footer, Sider } = Layout;
+const { Content, Footer, Sider } = Layout;
 
 export class Dashboard extends React.Component {
   state = {
