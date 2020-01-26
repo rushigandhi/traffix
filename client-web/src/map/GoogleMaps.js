@@ -25,22 +25,6 @@ export const GoogleMaps = compose(
   >
     {props.isMarkerShown && (
       <React.Fragment>
-        {/* <Marker
-          position={{
-            lat: (props.location && props.location.lat) || 0,
-            lng: (props.location && props.location.lng) || 0
-          }}
-        />
-        <Circle
-          defaultCenter={{
-            lat: (props.location && props.location.lat) || 0,
-            lng: (props.location && props.location.lng) || 0
-          }}
-          radius={3000}
-          options={{
-            strokeColor: "#ff0000"
-          }}
-        /> */}
         <Marker
           position={{
             lat: 43.257955,
