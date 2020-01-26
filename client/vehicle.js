@@ -5,7 +5,7 @@ class Vehicle {
     this.velocity = createVector(0, -1);
     this.position = createVector(x, y);
     this.r = 6;
-    this.deathBy = 0;
+    this.deathByCompletion = 0;
     this.maxspeed = 8;
     this.maxforce = 0.2;
     this.dna = [];
@@ -60,7 +60,7 @@ class Vehicle {
   }
 
   update() {
-    this.health -= 0.005;
+    this.health -= 0;
     this.velocity.add(this.acceleration);
     this.velocity.limit(this.maxspeed);
     this.position.add(this.velocity);
@@ -87,17 +87,14 @@ class Vehicle {
     if (this.health < 0) {
       return true;
     } else if (this.position.x >= 640 || this.position.y >= 360) {
-      this.deathBy = 1;
+      this.reproduce();
       return true;
     }
     return false;
   }
 
   reproduce() {
-    if (this.deathBy) {
-      return new Vehicle(0, random(110, 290), this.dna);
-    }
-    return null;
+    vehicles.push(new Vehicle(5, random(110, 290), this.dna));
   }
 
   eat(list, nutrition, perception) {

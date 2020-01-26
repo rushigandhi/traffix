@@ -87,10 +87,6 @@ function draw() {
     vehicles[i].boundaries();
     vehicles[i].update();
     vehicles[i].display();
-    var newVehicle = vehicles[i].reproduce();
-    if (newVehicle != null) {
-      vehicles.push(newVehicle);
-    }
     if (vehicles[i].retired()) {
       var x = vehicles[i].position.x;
       var y = vehicles[i].position.y;
