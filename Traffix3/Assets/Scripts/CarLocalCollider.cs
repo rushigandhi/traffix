@@ -20,11 +20,20 @@ public class CarLocalCollider : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+        if (other.tag != "Player")
+            return;
+
+        parent.vel = 0f;
         parent.vel *= Car.DAMP_FACTOR;
+        print("local other entered: ");
+        print(other);
     }
 
     private void OnTriggerExit(Collider other)
     {
+        if (other.tag != "Player")
+            return;
+
         parent.vel = 1f;
     }
 }

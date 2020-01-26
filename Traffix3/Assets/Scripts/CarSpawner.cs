@@ -7,6 +7,7 @@ public class CarSpawner : MonoBehaviour
 
     public Car template;
     public GameObject channelHost;
+    public int which = 0;
     private List<Channel> channels = new List<Channel>();
 
     private float cooldown;
@@ -14,7 +15,7 @@ public class CarSpawner : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        foreach(Transform child in channelHost.transform)
+        foreach (Transform child in channelHost.transform)
         {
             channels.Add(child.gameObject.GetComponent<Channel>());
         }
@@ -24,15 +25,18 @@ public class CarSpawner : MonoBehaviour
     void Update()
     {
         cooldown += Time.deltaTime;
-        if(cooldown >= 0.7f)
+        /**
+         * Generation 200: optimal time to live
+         */
+        if(cooldown >= 0.8f)
+        // if (cooldown >= temp)
         {
             Car dup = Instantiate(template);
-            dup.bound = channels[0];
+            dup.bound = channels[which];
             dup.transform.parent = this.transform;
             // enable it
             dup.gameObject.SetActive(true);
             dup.transform.localPosition = new Vector3(dup.transform.localPosition.x, 1f, dup.transform.localPosition.z);
-
             cooldown = 0;
         }
     }

@@ -2,17 +2,36 @@
 
 public class Car : MonoBehaviour
 {
-
-    public static float DAMP_FACTOR = 0.99f;
+    /**
+     * Generation 200; optimal damp factor
+     */
+    public static float DAMP_FACTOR = 0.1f;
 
     public Channel bound;
-    public float speed = 4f;
+    /**
+     * Generation 200; optimal speed factor
+     */
+    public static float speed = 22f;
 
     public float vel = 1f;
 
+    /**
+     * Generation 200; optimal collision box scaling values:
+     * Already pre-applied within Unity:
+     * 
+     * Local collision box: z-scale = 2
+     *                      z-offset = 2.1
+     * Foreign collision box: z-scale = 4
+     *                        z-offset = 3.2
+     *                        
+     * Derived these values from:
+     * food/path attraction, obstacle avoidance/detraction, path perception,
+     * obstacle perception, desired obstacle separation, speed, max acceleration/deceleration
+     */
+
     // Start is called before the first frame update
     void Start()
-    {
+    { 
         if (bound.direction == Dir.East || bound.direction == Dir.West)
         {
             // gridOffset = y comp
@@ -30,7 +49,7 @@ public class Car : MonoBehaviour
     {
         if (bound != null)
         {
-            transform.localEulerAngles = (new Vector3(0f, 0f, bound.rotation()));
+            transform.localEulerAngles = (new Vector3(0f, bound.rotation(), 0f));
             transform.Translate(Vector3.forward * Time.deltaTime * speed * vel);
         }
     }

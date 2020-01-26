@@ -11,7 +11,8 @@ public class CarForeignCollider : MonoBehaviour
     void Start()
     {
         parent = transform.parent.GetComponent<Car>();
-        gameObject.layer = LayerMask.NameToLayer(parent.bound.direction.ToString());
+        // gameObject.layer = LayerMask.NameToLayer(parent.bound.direction.ToString());
+        // parent.gameObject.layer = LayerMask.NameToLayer(parent.bound.direction.ToString());
     }
 
     // Update is called once per frame
@@ -22,11 +23,19 @@ public class CarForeignCollider : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+        if (other.tag != "Player")
+            return;
+
         parent.vel *= Car.DAMP_FACTOR;
+        print("other entered: ");
+        print(other);
     }
 
     private void OnTriggerExit(Collider other)
     {
+        if (other.tag != "Player")
+            return;
+
         parent.vel = 1f;
     }
 }
