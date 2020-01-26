@@ -2,7 +2,6 @@ import React from "react";
 import { Layout, Menu, Breadcrumb, Icon } from "antd";
 
 const { Header, Content, Footer, Sider } = Layout;
-const { SubMenu } = Menu;
 
 export class Dashboard extends React.Component {
   state = {
@@ -25,20 +24,20 @@ export class Dashboard extends React.Component {
           <div className="logo" />
           <Menu theme="dark" defaultSelectedKeys={["1"]} mode="inline">
             <Menu.Item key="1">
-              <Icon type="pie-chart" />
+              <Icon type="car" />
               <span>Map</span>
             </Menu.Item>
             <Menu.Item key="2">
-              <Icon type="desktop" />
+              <Icon type="book" />
               <span>Information Log</span>
             </Menu.Item>
             <Menu.Item key="2">
-              <Icon type="desktop" />
+              <Icon type="phone" />
               <span>Devices</span>
             </Menu.Item>
             <Menu.Item key="2">
-              <Icon type="desktop" />
-              <span>Devices</span>
+              <Icon type="setting" />
+              <span>Settings</span>
             </Menu.Item>
           </Menu>
         </Sider>
