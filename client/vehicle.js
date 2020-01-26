@@ -16,8 +16,8 @@ class Vehicle {
       this.dna[1] = -10; // Poison
       this.dna[2] = random(0, 100); // Food Perception
       this.dna[3] = random(0, 50); // Poison Perception
-      this.dna[4] = random(0, 100); // Desired Seperation
-      this.dna[5] = random(0, 20); // Seperation force
+      this.dna[4] = random(10, 50); // Desired Seperation
+      this.dna[5] = random(0, 8); // Seperation force
       this.dna[6] = random(5, 15); // Speed
       this.dna[7] = random(0, 1); // Max Force
     } else {
@@ -67,7 +67,7 @@ class Vehicle {
   }
 
   update() {
-    this.health -= 0.55;
+    this.health -= 0.25;
     this.velocity.add(this.acceleration);
     this.velocity.limit(this.dna[6]);
     this.position.add(this.velocity);
@@ -82,7 +82,7 @@ class Vehicle {
     let separateForce = this.separate(vehicles);
     var foodSteer = this.eatGood(good, 0.2, this.dna[2]);
     var poisonSteer = this.eatBad(bad, -Infinity, this.dna[3]);
-    separateForce.mult(this.dna[5] * 5);
+    separateForce.mult(5);
     foodSteer.mult(this.dna[0]);
     poisonSteer.mult(this.dna[1]);
     this.applyForce(separateForce);
@@ -92,13 +92,13 @@ class Vehicle {
 
   pastFinishLine() {
     if (this.finishDirection == "x-left") {
-      return this.position.x <= this.finishNumber;
+      return this.position.x <= 0;
     } else if (this.finishDirection == "x-right") {
       return this.position.x >= this.finishNumber;
     } else if (this.finishDirection == "y-down") {
       return this.position.y >= this.finishNumber;
     } else if (this.finishDirection == "y-up") {
-      return this.position.y <= this.finishNumber;
+      return this.position.y <= 0;
     }
     return false;
   }
@@ -127,7 +127,7 @@ class Vehicle {
   }
 
   reproduce() {
-    if (vehicles.length < 50) {
+    if (vehicles.length < 20) {
       vehicles.push(
         new Vehicle(
           20,
@@ -195,7 +195,6 @@ class Vehicle {
     // steer.x = -Math.abs(steer.x);
 
     steer.limit(this.dna[7]);
-
 
     // this.applyForce(steer);
     return steer;

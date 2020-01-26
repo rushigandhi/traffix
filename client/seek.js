@@ -1,6 +1,7 @@
 let vehicles = [];
-var points = [];
 var poison = [];
+let path1 = [];
+let path2 = [];
 
 function randomCoords(num) {
   list = [];
@@ -31,8 +32,9 @@ function plotBasicIntersection(xStart, xEnd, yStart, yEnd) {
   return list;
 }
 
-function applyGradient(list, xStart, xEnd, yStart, yEnd, orientation) {
+function applyGradient(xStart, xEnd, yStart, yEnd, orientation) {
   var separation = 10;
+  list = [];
   if (orientation == "horizontal") {
     for (var i = xStart; i < xEnd; i += separation) {
       for (var j = yStart; j < yEnd; j += separation) {
@@ -50,22 +52,33 @@ function applyGradient(list, xStart, xEnd, yStart, yEnd, orientation) {
 }
 
 function setupEntities() {
-  let z = plotBasicIntersection(0, 650, 0, 75);
+  let z = plotBasicIntersection(0, 200, 0, 100);
   z.forEach(a => poison.push(new Point(a, -1, "red", true)));
 
-  z = plotBasicIntersection(0, 650, 150, 360);
+  z = plotBasicIntersection(360, 650, 200, 360);
   z.forEach(a => poison.push(new Point(a, -1, "red", true)));
 
-  points = applyGradient(points, 0, 650, 80, 150, "vertical");
+  z = plotBasicIntersection(360, 650, 0, 100);
+  z.forEach(a => poison.push(new Point(a, -1, "red", true)));
 
-  // z = plotBasicIntersection(0, 650, 80, 150);
-  // z.forEach(a => points.push(new Point(a, 0.1, "blue")));
+  z = plotBasicIntersection(0, 200, 200, 360);
+  z.forEach(a => poison.push(new Point(a, -1, "red", true)));
 
-  // z = plotBasicIntersection(430, 500, 150, 370);
-  // z.forEach(a => points.push(new Point(a, 0.95, "blue")));
+  // Lines
+  z = plotBasicIntersection(0, 200, 150, 160);
+  z.forEach(a => poison.push(new Point(a, -1, "yellow", true)));
 
-  // let z = plotBasicIntersection(0, 640, 0, 75);
-  // z.forEach(a => poison.push(a));
+  z = plotBasicIntersection(360, 650, 150, 160);
+  z.forEach(a => poison.push(new Point(a, -1, "yellow", true)));
+
+  z = plotBasicIntersection(280, 290, 200, 360);
+  z.forEach(a => poison.push(new Point(a, -1, "yellow", true)));
+
+  z = plotBasicIntersection(280, 290, 0, 100);
+  z.forEach(a => poison.push(new Point(a, -1, "yellow", true)));
+
+  path1 = applyGradient(0, 650, 100, 200, "vertical");
+  path2 = applyGradient(200, 360, 0, 360, "horizontal");
 }
 
 function setup() {
@@ -74,9 +87,9 @@ function setup() {
     var y = random(115, 125);
     var x = 0;
     if (i % 2) {
-      vehicles[i] = new Vehicle(x, y, "green", points, 640, "x-right");
+      vehicles[i] = new Vehicle(x, y, "green", path1, 640, "x-right");
     } else {
-      vehicles[i] = new Vehicle(x, y, "yellow", points, 640, "x-right");
+      vehicles[i] = new Vehicle(x, y, "yellow", path2, 360, "y-down");
     }
   }
   setupEntities();
@@ -93,12 +106,17 @@ function draw() {
   strokeWeight(2);
   ellipse(mouse.x, mouse.y, 48, 48);
 
-  plotCoords(points, color(255, 0, 255));
+  plotCoords(path1, color(1, 1, 1));
+  plotCoords(path2, color(112, 31, 113));
   plotCoords(poison, color(255, 0, 0));
 
   // Steering
   for (var i = vehicles.length - 1; i >= 0; i--) {
-    vehicles[i].behaviours(points, poison);
+    if (i % 2) {
+      vehicles[i].behaviours(path1, poison);
+    } else {
+      vehicles[i].behaviours(path2, poison);
+    }
     vehicles[i].boundaries();
     vehicles[i].update();
     vehicles[i].display();
