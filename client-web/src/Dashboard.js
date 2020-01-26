@@ -1,5 +1,7 @@
 import React from "react";
-import { Layout, Menu, Breadcrumb, Icon } from "antd";
+import { Layout, Menu, Icon } from "antd";
+import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
+import { Map } from "./map/Map";
 
 const { Header, Content, Footer, Sider } = Layout;
 
@@ -15,46 +17,55 @@ export class Dashboard extends React.Component {
 
   render() {
     return (
-      <Layout style={{ minHeight: "100vh" }}>
-        <Sider
-          collapsible
-          collapsed={this.state.collapsed}
-          onCollapse={this.onCollapse}
-        >
-          <div className="logo" />
-          <Menu theme="dark" defaultSelectedKeys={["1"]} mode="inline">
-            <Menu.Item key="1">
-              <Icon type="car" />
-              <span>Map</span>
-            </Menu.Item>
-            <Menu.Item key="2">
-              <Icon type="book" />
-              <span>Information Log</span>
-            </Menu.Item>
-            <Menu.Item key="2">
-              <Icon type="phone" />
-              <span>Devices</span>
-            </Menu.Item>
-            <Menu.Item key="2">
-              <Icon type="setting" />
-              <span>Settings</span>
-            </Menu.Item>
-          </Menu>
-        </Sider>
-        <Layout>
-          <Header style={{ background: "#fff", padding: 0 }} />
-          <Content style={{ margin: "0 16px" }}>
-            <Breadcrumb style={{ margin: "16px 0" }}>
-              <Breadcrumb.Item>User</Breadcrumb.Item>
-              <Breadcrumb.Item>Bill</Breadcrumb.Item>
-            </Breadcrumb>
-            <div style={{ padding: 24, background: "#fff", minHeight: 360 }}>
-              Bill is a cat.
-            </div>
-          </Content>
-          <Footer style={{ textAlign: "center" }}>Traffixed</Footer>
-        </Layout>
-      </Layout>
+      <Router>
+        <Switch>
+          <Layout style={{ minHeight: "100vh" }}>
+            <Sider
+              collapsible
+              collapsed={this.state.collapsed}
+              onCollapse={this.onCollapse}
+            >
+              <div className="logo" />
+              <Menu theme="dark" defaultSelectedKeys={["1"]} mode="inline">
+                <Menu.Item key="1">
+                  <Link to="/map">
+                    <Icon type="car" />
+                    <span>Map</span>
+                  </Link>
+                </Menu.Item>
+                <Menu.Item key="2">
+                  <Link to="/info-log">
+                    <Icon type="book" />
+                    <span>Information Log</span>
+                  </Link>
+                </Menu.Item>
+                <Menu.Item key="3">
+                  <Link to="/devices">
+                    <Icon type="phone" />
+                    <span>Devices</span>
+                  </Link>
+                </Menu.Item>
+                <Menu.Item key="4">
+                  <Link to="/settings">
+                    <Icon type="setting" />
+                    <span>Settings</span>
+                  </Link>
+                </Menu.Item>
+              </Menu>
+            </Sider>
+            <Layout>
+              <Content
+                style={{ padding: "16px 16px 16px 16px", background: "white" }}
+              >
+                <Route path="/map">
+                  <Map />
+                </Route>
+              </Content>
+              <Footer style={{ textAlign: "center" }}>Traffixed</Footer>
+            </Layout>
+          </Layout>
+        </Switch>
+      </Router>
     );
   }
 }
