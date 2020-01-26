@@ -1,3 +1,4 @@
+var mr = 0.01
 class Vehicle {
     constructor(x, y, dna) {
       this.acceleration = createVector(0, 0);
@@ -6,16 +7,28 @@ class Vehicle {
       this.r = 6;
       this.maxspeed = 8;
       this.maxforce = 0.2;
+      this.dna = []
       if (dna === undefined) {
-        this.dna = []
         this.dna[0] = random(-2,2) // Food
         this.dna[1] = random(-2,2) // Poison
-        this.dna[2] = random(10,100) // Food Perception
-        this.dna[3] = random(10,100) // Poison Perception
+        this.dna[2] = random(0,100) // Food Perception
+        this.dna[3] = random(0,100) // Poison Perception
+        this.dna[4] = random(10,160) // Desired Seperation
+        this.dna[5] = random(0,8) // Seperation force
       } else {
-          this.dna = dna
+          this.dna[0] = dna[0]
+          if (random(1) < mr) this.dna[0] += random(-0.1,0.1)
+          this.dna[1] = dna[1]
+          if (random(1) < mr) this.dna[1] += random(-0.1,0.1)
+          this.dna[2] = dna[2]
+          if (random(1) < mr) this.dna[2] += random(-10,10)
+          this.dna[3] = dna[3]
+          if (random(1) < mr) this.dna[3] += random(-10,10)
+          this.dna[4] = dna[4]
+          if (random(1) < mr) this.dna[4] += random(-8,8)
+          this.dna[5] = dna[5]
+          if (random(1) < mr) this.dna[5] += random(-1,1)
       }
-      
       this.health = 1
     }
 
@@ -58,11 +71,14 @@ class Vehicle {
     }
 
     behaviours(good, bad) {
+        let separateForce = this.separate(vehicles);
         var foodSteer = this.eat(good, 0.2, this.dna[2]);
-        var poisonSteer = this.eat(bad, -0.5, this.dna[3 ]);
+        var poisonSteer = this.eat(bad, -0.5, this.dna[3]);
         foodSteer.mult(this.dna[0])
         poisonSteer.mult(this.dna[1])
+        separateForce.mult(5);
         this.applyForce(foodSteer)
+        this.applyForce(separateForce);
         this.applyForce(poisonSteer)
     }
 
@@ -72,8 +88,9 @@ class Vehicle {
 
     reproduce(){
         if (random(1)<0.001){
-            return new Vehicle(this.position.x,this.position.y,this.dna)
-        }
+            return new Vehicle(this.position.x+random(-0.1,0.1),this.position.y+random(-0.1,0.1),this.dna)
+        } 
+        return null
     }
 
     eat(list, nutrition, perception) {
@@ -107,6 +124,36 @@ class Vehicle {
       // this.applyForce(steer);
       return steer
     }
+
+    separate(vehicles) {
+        let desiredseparation = this.dna[4];
+        let sum = createVector();
+        let count = 0;
+        // For every boid in the system, check if it's too close
+        for (let i = 0; i < vehicles.length; i++) {
+          let d = p5.Vector.dist(this.position, vehicles[i].position);
+          // If the distance is greater than 0 and less than an arbitrary amount (0 when you are yourself)
+          if ((d > 0) && (d < desiredseparation)) {
+            // Calculate vector pointing away from neighbor
+            let diff = p5.Vector.sub(this.position, vehicles[i].position);
+            diff.normalize();
+            diff.div(d); // Weight by distance
+            sum.add(diff);
+            count++; // Keep track of how many
+          }
+        }
+        // Average -- divide by how many
+        if (count > 0) {
+          sum.div(count);
+          // Our desired vector is the average scaled to maximum speed
+          sum.normalize();
+          sum.mult(this.maxspeed);
+          // Implement Reynolds: Steering = Desired - Velocity
+          sum.sub(this.velocity);
+          sum.limit(this.maxforce);
+        }
+        return sum;
+      }
   
     display() {
       let theta = this.velocity.heading() + PI / 2;

@@ -22,23 +22,19 @@ function plotCoords(list, colour) {
 function plotBasicIntersection() {
   list = [];
   separation = 10;
-  for (var i = 0; i < 10; i++) {
-    var x = random(width);
-    var y = random(height);
+  for (var i = 0; i < 640; i += separation) {
+    var x = i;
+    var y = 300;
     list.push(createVector(x, y));
   }
   return list;
 }
 
 function setupEntities() {
-<<<<<<< HEAD
-  food = randomCoords(50);
+//   food = randomCoords(50);
   poison = randomCoords(10);
-  plotBasicIntersection();
-=======
-  food = randomCoords();
-  poison = plotBasicIntersection();
->>>>>>> 271135520a655471e96a6f30ea237cd91aa1ff4b
+  const x = plotBasicIntersection();
+  x.forEach(a => food.push(a));
 }
 
 function setup() {
@@ -60,7 +56,7 @@ function addNewFood(){
 function draw() {
   background(0);
 
-  addNewFood()
+//   addNewFood()
   let mouse = createVector(mouseX, mouseY);
 
   // Mouse
@@ -74,7 +70,7 @@ function draw() {
 
   // Steering
   for (var i = vehicles.length-1; i >= 0; i--) {
-    vehicles[i].behaviours(food, poison);
+    vehicles[i].behaviours(food,poison);
     vehicles[i].boundaries();
     vehicles[i].update();
     vehicles[i].display();
@@ -83,6 +79,9 @@ function draw() {
         vehicles.push(newVehicle)
     }
     if (vehicles[i].retired()) {
+        var x = vehicles[i].position.x
+        var y = vehicles[i].position.y
+        food.push(createVector(x,y))
         vehicles.splice(i,1)
     }
   }
